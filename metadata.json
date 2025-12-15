@@ -1,0 +1,5 @@
+{
+  "name": "智能封面工坊 (CoverCraft)",
+  "description": "专业的本地封面处理工具。支持自动增强、添加艺术文字、分辨率调整及横竖屏智能转换。所有处理均在浏览器本地完成，安全快速。",
+  "requestFramePermissions": []
+}
