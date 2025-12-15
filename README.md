@@ -1,10 +1,22 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="CoverCraft Banner" src="./assets/banner.png" />
 </div>
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-# Run and deploy your AI Studio app
+# CoverCraft (智能封面工坊)
+
+An intelligent cover generation tool powered by Google Gemini AI, helping you quickly create stunning video covers, social media images, and various design assets.
+
+## ✨ Key Features
+
+- 🤖 **AI-Powered** - Leverages Google Gemini's powerful AI capabilities for creative cover generation
+- 🎨 **Smart Design** - Automatically understands your needs and generates professional-grade designs
+- ⚡ **Fast & Efficient** - Get multiple design options in seconds
+- 🎯 **Precise Customization** - Supports custom styles, colors, and elements
+- 📱 **Responsive Interface** - Perfectly adapts to various devices and screen sizes
+
+## 🚀 Quick Start
 
 This contains everything you need to run your app locally.
 

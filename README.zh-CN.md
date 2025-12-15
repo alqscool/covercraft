@@ -1,8 +1,22 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="CoverCraft Banner" src="./assets/banner.png" />
 </div>
 
-# 运行和部署你的 AI Studio 应用
+[English](README.md) | [简体中文](README.zh-CN.md)
+
+# 智能封面工坊 (CoverCraft)
+
+一个基于 Google Gemini AI 的智能封面生成工具，帮助你快速创建精美的视频封面、社交媒体图片和各类设计素材。
+
+## ✨ 主要特性
+
+- 🤖 **AI 驱动** - 使用 Google Gemini 强大的 AI 能力生成创意封面
+- 🎨 **智能设计** - 自动理解你的需求，生成专业级设计
+- ⚡ **快速高效** - 几秒钟内即可获得多个设计方案
+- 🎯 **精准定制** - 支持自定义风格、颜色和元素
+- 📱 **响应式界面** - 完美适配各种设备和屏幕尺寸
+
+## 🚀 快速开始
 
 本项目包含了在本地运行应用所需的一切。
 
