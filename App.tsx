@@ -267,6 +267,7 @@ const App = () => {
 
   // Interaction State
   const [dragTarget, setDragTarget] = useState<'text' | 'logo' | 'mask' | null>(null);
+  const [resizeTarget, setResizeTarget] = useState<'text' | 'logo' | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   // --- Handlers ---
@@ -422,9 +423,35 @@ const App = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragTarget || !previewRef.current) return;
+    if ((!dragTarget && !resizeTarget) || !previewRef.current) return;
 
     const rect = previewRef.current.getBoundingClientRect();
+
+    // Handle Resizing
+    if (resizeTarget) {
+      const settings = resizeTarget === 'text' ? textSettings : logoSettings;
+      // @ts-ignore - positionX/Y exist on both
+      const centerX = rect.left + rect.width * (settings.positionX / 100);
+      // @ts-ignore
+      const centerY = rect.top + rect.height * (settings.positionY / 100);
+
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Convert distance to percentage of width (assuming handle is at radius = size/2 %)
+      const distPercent = (dist / rect.width) * 100;
+      const newSize = distPercent * 2;
+
+      if (resizeTarget === 'text') {
+        setTextSettings(prev => ({ ...prev, size: Math.min(150, Math.max(10, newSize)) }));
+      } else {
+        setLogoSettings(prev => ({ ...prev, size: Math.min(50, Math.max(5, newSize)) }));
+      }
+      return;
+    }
+
+    // Handle Moving
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
@@ -442,6 +469,7 @@ const App = () => {
 
   const handleMouseUp = () => {
     setDragTarget(null);
+    setResizeTarget(null);
   };
 
   // Logic to determine which image to display based on comparison state
@@ -891,20 +919,90 @@ const App = () => {
                         </div>
                       )}
                       {previewSource === 'final' && activeTools.includes(ProcessingTool.ADD_TEXT) && (
-                        <div
-                          className="absolute w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md cursor-move z-20 hover:scale-125 transition-transform"
-                          style={{ left: `calc(${textSettings.positionX}% - 8px)`, top: `calc(${textSettings.positionY}% - 8px)` }}
-                          onMouseDown={(e) => handleMouseDown(e, 'text')}
-                          title={t.dragText}
-                        />
+                        (() => {
+                          // Estimate Text Dimensions for Bounding Box
+                          const lines = prompt.split('\n');
+                          const maxLineLen = Math.max(...lines.map(l => l.length), 1);
+                          const fontSizePercent = textSettings.size / 5; // Based on size/500 * 100
+                          const lineHeightPercent = fontSizePercent * 1.2;
+
+                          // Width estimation: char width approx 0.6em
+                          const widthPercent = maxLineLen * fontSizePercent * 0.6;
+                          const heightPercent = lines.length * lineHeightPercent;
+
+                          return (
+                            <>
+                              {/* Bounding Box */}
+                              <div
+                                className="absolute border-2 border-dashed border-primary/50 pointer-events-none z-10"
+                                style={{
+                                  left: `calc(${textSettings.positionX}% - ${widthPercent / 2}%)`,
+                                  top: `calc(${textSettings.positionY}% - ${heightPercent / 2}%)`,
+                                  width: `${widthPercent}%`,
+                                  height: `${heightPercent}%`,
+                                }}
+                              >
+                                {/* Resize Handle (Bottom Right) */}
+                                <div
+                                  className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-primary rounded-full shadow-sm cursor-nwse-resize z-20 pointer-events-auto hover:scale-125 transition-transform"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setResizeTarget('text');
+                                    setActiveTab('text');
+                                  }}
+                                  title={t.textSize}
+                                />
+                              </div>
+
+                              {/* Center Move Handle */}
+                              <div
+                                className="absolute w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md cursor-move z-20 hover:scale-125 transition-transform"
+                                style={{ left: `calc(${textSettings.positionX}% - 8px)`, top: `calc(${textSettings.positionY}% - 8px)` }}
+                                onMouseDown={(e) => handleMouseDown(e, 'text')}
+                                title={t.dragText}
+                              >
+                                <div className="absolute inset-0.5 bg-primary rounded-full opacity-20"></div>
+                              </div>
+                            </>
+                          );
+                        })()
                       )}
                       {previewSource === 'final' && activeTools.includes(ProcessingTool.ADD_LOGO) && logoSettings.data && (
-                        <div
-                          className="absolute w-4 h-4 bg-white border-2 border-secondary rounded-full shadow-md cursor-move z-20 hover:scale-125 transition-transform"
-                          style={{ left: `calc(${logoSettings.positionX}% - 8px)`, top: `calc(${logoSettings.positionY}% - 8px)` }}
-                          onMouseDown={(e) => handleMouseDown(e, 'logo')}
-                          title={t.dragLogo}
-                        />
+                        <>
+                          {/* Bounding Box */}
+                          <div
+                            className="absolute border-2 border-dashed border-secondary/50 pointer-events-none z-10"
+                            style={{
+                              left: `calc(${logoSettings.positionX}% - ${logoSettings.size / 2}%)`,
+                              top: `calc(${logoSettings.positionY}% - ${logoSettings.size / 2}%)`, // Assuming square for guide
+                              width: `${logoSettings.size}%`,
+                              height: `${logoSettings.size}%`,
+                            }}
+                          >
+                            {/* Resize Handle (Bottom Right) */}
+                            <div
+                              className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-secondary rounded-full shadow-sm cursor-nwse-resize z-20 pointer-events-auto hover:scale-125 transition-transform"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setResizeTarget('logo');
+                                setActiveTab('logo');
+                              }}
+                              title={t.logoSize}
+                            />
+                          </div>
+
+                          {/* Center Move Handle */}
+                          <div
+                            className="absolute w-4 h-4 bg-white border-2 border-secondary rounded-full shadow-md cursor-move z-20 hover:scale-125 transition-transform"
+                            style={{ left: `calc(${logoSettings.positionX}% - 8px)`, top: `calc(${logoSettings.positionY}% - 8px)` }}
+                            onMouseDown={(e) => handleMouseDown(e, 'logo')}
+                            title={t.dragLogo}
+                          >
+                            <div className="absolute inset-0.5 bg-secondary rounded-full opacity-20"></div>
+                          </div>
+                        </>
                       )}
                     </div>
                   ) : (
