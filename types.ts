@@ -45,6 +45,7 @@ export interface TextSettings {
   strokeWidth?: number; // 0-20 scale relative to font size
   shadowBlur?: number;  // 0-100 scale relative to font size
   shadowColor?: string; // Hex code
+  fontFamily?: string; // Font family name
 }
 
 export interface EnhanceSettings {
@@ -74,7 +75,7 @@ export interface LogoSettings {
 }
 
 export interface ProcessingConfig {
-  activeTools: ProcessingTool[]; 
+  activeTools: ProcessingTool[];
   prompt: string;
   aspectRatio: AspectRatio;
   resizeMode: ResizeMode;
@@ -84,7 +85,7 @@ export interface ProcessingConfig {
   enhanceSettings?: EnhanceSettings;
   maskSettings?: MaskSettings;
   logoSettings?: LogoSettings;
-  previewMode?: boolean; 
+  previewMode?: boolean;
 }
 
 export interface GeneratedImage {

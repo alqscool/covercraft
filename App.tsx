@@ -107,6 +107,7 @@ const TRANSLATIONS = {
     posY: "垂直",
     textSize: "大小",
     textColor: "颜色",
+    textFont: "字体",
     textStroke: "描边",
     shadowBlur: "阴影",
     shadowColor: "颜色",
@@ -167,6 +168,7 @@ const TRANSLATIONS = {
     posY: "V-Pos",
     textSize: "Size",
     textColor: "Color",
+    textFont: "Font",
     textStroke: "Stroke",
     shadowBlur: "Shadow",
     shadowColor: "Color",
@@ -238,7 +240,8 @@ const App = () => {
     positionY: 50,
     strokeWidth: 4,
     shadowBlur: 10,
-    shadowColor: '#000000'
+    shadowColor: '#000000',
+    fontFamily: 'Microsoft YaHei'
   });
 
   const [enhanceSettings, setEnhanceSettings] = useState({
@@ -648,6 +651,55 @@ const App = () => {
             {/* Typography - Modular Style */}
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-3">
               <span className="text-[10px] font-bold text-ink-400 uppercase tracking-wider block mb-1">{t.typography}</span>
+
+              {/* Font Family Selector */}
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-ink-500 w-8">{t.textFont}</span>
+                <select
+                  value={textSettings.fontFamily || 'Microsoft YaHei'}
+                  onChange={(e) => setTextSettings(prev => ({ ...prev, fontFamily: e.target.value }))}
+                  className="flex-1 px-2 py-1 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none bg-white text-ink-900 cursor-pointer"
+                >
+                  <optgroup label="中文字体">
+                    <option value="Microsoft YaHei">微软雅黑</option>
+                    <option value="SimHei">黑体</option>
+                    <option value="SimSun">宋体</option>
+                    <option value="KaiTi">楷体</option>
+                    <option value="FangSong">仿宋</option>
+                    <option value="STHeiti">华文黑体</option>
+                    <option value="STKaiti">华文楷体</option>
+                    <option value="STSong">华文宋体</option>
+                    <option value="STFangsong">华文仿宋</option>
+                    <option value="PingFang SC">苹方-简</option>
+                    <option value="Hiragino Sans GB">冬青黑体简体中文</option>
+                    <option value="Noto Sans SC">思源黑体</option>
+                    <option value="Source Han Sans CN">思源黑体 CN</option>
+                  </optgroup>
+                  <optgroup label="英文字体">
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Impact">Impact</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <option value="Trebuchet MS">Trebuchet MS</option>
+                    <option value="Arial Black">Arial Black</option>
+                    <option value="Palatino">Palatino</option>
+                    <option value="Garamond">Garamond</option>
+                    <option value="Tahoma">Tahoma</option>
+                  </optgroup>
+                  <optgroup label="通用字体">
+                    <option value="sans-serif">Sans-serif</option>
+                    <option value="serif">Serif</option>
+                    <option value="monospace">Monospace</option>
+                    <option value="cursive">Cursive</option>
+                    <option value="fantasy">Fantasy</option>
+                  </optgroup>
+                </select>
+              </div>
+
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-ink-500 w-8">{t.textSize}</span>
                 <input type="range" min="10" max="150" value={textSettings.size} onChange={(e) => setTextSettings(prev => ({ ...prev, size: Number(e.target.value) }))} className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
